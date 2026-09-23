@@ -95,7 +95,7 @@ def use_utf8_stdout() -> None:
 # --------------------------------------------------------------------------- #
 
 DEFAULT_CONFIG: Dict[str, Any] = {
-    "api_key": "sk-c9ftiqakm1c852vk5as9nq6m0od2yayygydgnskh50e06wza",
+    "api_key": "sk-XXX",
     "base_url": DEFAULT_BASE_URL,
     "model": DEFAULT_MODEL,
     "system_prompt": DEFAULT_SYSTEM_PROMPT,
