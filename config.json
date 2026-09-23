@@ -1,0 +1,40 @@
+{
+  "api_key": "sk-c9ftiqakm1c852vk5as9nq6m0od2yayygydgnskh50e06wza",
+  "base_url": "https://api.xiaomimimo.com/v1",
+  "model": "mimo-v2.6-pro",
+  "system_prompt": "你是MiMo（中文名称也是MiMo），是小米公司研发的AI智能助手。\n今天的日期：{date} {week}，你的知识截止日期是2024年12月。",
+  "stream": true,
+  "show_reasoning": true,
+  "timeout": 180,
+  "max_retries": 3,
+  "auth_scheme": "both",
+  "proxy": "",
+  "params": {
+    "temperature": 1,
+    "top_p": 0.95,
+    "max_completion_tokens": 4096
+  },
+  "extra_body": {},
+  "tools": {
+    "enabled": false,
+    "max_iterations": 6,
+    "sandbox_root": "",
+    "builtin": {
+      "enabled": true,
+      "allow_write": false,
+      "allow_network": true
+    },
+    "skills": {
+      "enabled": true,
+      "dir": "skills",
+      "include": [],
+      "exclude": []
+    },
+    "mcp": {
+      "enabled": true,
+      "config": "mcp.json",
+      "include": [],
+      "exclude": []
+    }
+  }
+}

@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>MiMo 助手</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23ff6900'/%3E%3Ctext x='16' y='22' font-size='18' font-family='sans-serif' font-weight='bold' fill='white' text-anchor='middle'%3EM%3C/text%3E%3C/svg%3E" />
+<link rel="stylesheet" href="/style.css" />
+</head>
+<body>
+
+<div class="app">
+  <!-- ===================== 侧边栏 ===================== -->
+  <aside class="sidebar" id="sidebar">
+    <div class="side-head">
+      <div class="brand">
+        <span class="brand-logo">M</span>
+        <div class="brand-text">
+          <strong>MiMo 助手</strong>
+          <small id="brandModel">加载中…</small>
+        </div>
+      </div>
+      <button class="icon-btn only-mobile" id="closeSide" title="收起侧栏">
+        <svg viewBox="0 0 16 16"><path d="M3.5 3.5l9 9M12.5 3.5l-9 9"/></svg>
+      </button>
+    </div>
+
+    <button class="new-chat" id="newChat">
+      <svg viewBox="0 0 16 16"><path d="M8 3v10M3 8h10"/></svg>
+      <span>新对话</span>
+    </button>
+
+    <div class="conv-list" id="convList"></div>
+
+    <div class="side-foot">
+      <div class="stat" id="sessionStat">0 轮对话 · 0 tokens</div>
+      <div class="foot-actions">
+        <button class="ghost-btn" id="openSettings">
+          <svg viewBox="0 0 16 16"><path d="M2 4.5h12M2 8h12M2 11.5h12"/><circle cx="5.5" cy="4.5" r="1.6"/><circle cx="10.5" cy="8" r="1.6"/><circle cx="6.5" cy="11.5" r="1.6"/></svg>
+          设置
+        </button>
+        <button class="ghost-btn" id="themeBtn" title="切换主题">
+          <svg viewBox="0 0 16 16"><circle cx="8" cy="8" r="6"/><path d="M8 2a6 6 0 000 12z" fill="currentColor" stroke="none"/></svg>
+        </button>
+      </div>
+    </div>
+  </aside>
+
+  <div class="scrim" id="scrim"></div>
+
+  <!-- ===================== 主区域 ===================== -->
+  <main class="main">
+    <header class="topbar">
+      <button class="icon-btn only-mobile" id="openSide" title="打开侧栏">
+        <svg viewBox="0 0 16 16"><path d="M2 4h12M2 8h12M2 12h12"/></svg>
+      </button>
+      <div class="title-wrap">
+        <input class="conv-title" id="convTitle" value="新对话" spellcheck="false" />
+        <div class="title-sub" id="titleSub">就绪</div>
+      </div>
+      <div class="top-actions">
+        <select class="model-select" id="modelSelect" title="选择模型"></select>
+        <button class="icon-btn" id="exportBtn" title="导出为 Markdown">
+          <svg viewBox="0 0 16 16"><path d="M8 2v8M5 7.5L8 10.5l3-3M3 13h10"/></svg>
+        </button>
+        <button class="icon-btn" id="clearBtn" title="清空当前对话">
+          <svg viewBox="0 0 16 16"><path d="M3 5h10M6.5 5V3h3v2M5 5l.8 8h4.4l.8-8"/></svg>
+        </button>
+      </div>
+    </header>
+
+    <div class="messages" id="messages"></div>
+
+    <div class="composer-wrap">
+      <div class="composer" id="composer">
+        <textarea id="input" rows="1" placeholder="输入消息…  Enter 发送，Shift + Enter 换行"></textarea>
+        <div class="composer-bar">
+          <label class="chip" id="toolsChip" title="允许模型调用工具（内置 / 技能 / MCP）">
+            <input type="checkbox" id="toolsToggle" checked />
+            <span>工具</span>
+          </label>
+          <label class="chip" title="开启后强制模型联网搜索">
+            <input type="checkbox" id="searchToggle" />
+            <span>联网搜索</span>
+          </label>
+          <label class="chip" title="是否显示模型的思考过程">
+            <input type="checkbox" id="thinkToggle" checked />
+            <span>显示思考</span>
+          </label>
+          <label class="chip" title="多轮对话中把历史思考内容一并回传（官方推荐）">
+            <input type="checkbox" id="reasonEchoToggle" checked />
+            <span>回传思考</span>
+          </label>
+          <span class="grow"></span>
+          <span class="hint" id="hint"></span>
+          <button class="send-btn" id="sendBtn" title="发送">
+            <svg viewBox="0 0 16 16" class="ico-send"><path d="M2.5 8L13.5 2.5 10.5 13.5 8 9.5z"/></svg>
+            <svg viewBox="0 0 16 16" class="ico-stop"><rect x="4" y="4" width="8" height="8" rx="1.5"/></svg>
+            <span>发送</span>
+          </button>
+        </div>
+      </div>
+      <div class="disclaimer">MiMo 可能会出错，请核对重要信息。</div>
+    </div>
+  </main>
+</div>
+
+<!-- ===================== 设置面板 ===================== -->
+<div class="modal" id="settingsModal" hidden>
+  <div class="modal-mask" data-close="1"></div>
+  <div class="modal-card">
+    <div class="modal-head">
+      <h2>设置</h2>
+      <button class="icon-btn" data-close="1" title="关闭">
+        <svg viewBox="0 0 16 16"><path d="M3.5 3.5l9 9M12.5 3.5l-9 9"/></svg>
+      </button>
+    </div>
+
+    <div class="modal-body">
+      <section class="form-sec">
+        <h3>接口凭证</h3>
+        <label class="field">
+          <span class="label">API Key</span>
+          <input type="password" id="fApiKey" placeholder="sk-xxxxx（留空表示不修改）" autocomplete="off" />
+          <em class="tip" id="keyTip">尚未配置</em>
+        </label>
+        <label class="field">
+          <span class="label">Base URL</span>
+          <input type="text" id="fBaseUrl" placeholder="https://api.xiaomimimo.com/v1" />
+          <em class="tip">按量付费用 api.xiaomimimo.com/v1，Token Plan 用 token-plan-cn.xiaomimimo.com/v1</em>
+        </label>
+        <div class="row">
+          <button class="btn btn-ghost" id="testBtn">测试连接</button>
+          <span class="test-result" id="testResult"></span>
+        </div>
+      </section>
+
+      <section class="form-sec">
+        <h3>模型与生成</h3>
+        <label class="field">
+          <span class="label">默认模型</span>
+          <input type="text" id="fModel" list="modelList" placeholder="mimo-v2.6-pro" />
+          <datalist id="modelList"></datalist>
+        </label>
+        <div class="slider-row">
+          <label class="field">
+            <span class="label">temperature <b id="vTemp">1.0</b></span>
+            <input type="range" id="fTemp" min="0" max="1.5" step="0.05" />
+          </label>
+          <label class="field">
+            <span class="label">top_p <b id="vTopP">0.95</b></span>
+            <input type="range" id="fTopP" min="0.01" max="1" step="0.01" />
+          </label>
+        </div>
+        <em class="tip">思考模式下这两个参数会被模型强制为默认值 1.0 / 0.95</em>
+        <label class="field">
+          <span class="label">最大输出 tokens</span>
+          <input type="number" id="fMaxTokens" min="16" max="65536" step="256" />
+        </label>
+      </section>
+
+      <section class="form-sec">
+        <h3>系统提示词</h3>
+        <textarea id="fSystem" rows="4" placeholder="你是MiMo…"></textarea>
+        <em class="tip">支持 {date} 与 {week} 占位符，发送时自动替换为当前日期</em>
+      </section>
+
+      <section class="form-sec">
+        <h3>工具扩展（内置 / 技能 / MCP）</h3>
+        <label class="switch-row">
+          <input type="checkbox" id="fToolsEnabled" />
+          <span>启用工具调用</span>
+        </label>
+        <em class="tip">开启后模型可以自己决定调用工具。内置工具被限制在沙箱目录内；技能放在 skills/ 目录；MCP 服务器配置在 mcp.json。保存设置后自动重新加载。</em>
+        <div class="tool-panel">
+          <div class="tool-panel-head">
+            <span id="toolSummary">加载中…</span>
+            <button class="btn btn-ghost btn-sm" id="reloadToolsBtn">重新加载</button>
+          </div>
+          <div class="tool-panel-list" id="toolList"></div>
+          <div class="tool-panel-notes" id="toolNotes"></div>
+        </div>
+      </section>
+
+      <section class="form-sec">
+        <h3>网络与容错</h3>
+        <div class="row">
+          <label class="field half">
+            <span class="label">超时（秒）</span>
+            <input type="number" id="fTimeout" min="10" max="600" step="10" />
+          </label>
+          <label class="field half">
+            <span class="label">失败重试次数</span>
+            <input type="number" id="fRetries" min="0" max="8" step="1" />
+          </label>
+        </div>
+        <label class="field">
+          <span class="label">代理</span>
+          <input type="text" id="fProxy" placeholder="http://127.0.0.1:7890（留空则用系统环境变量）" />
+        </label>
+      </section>
+    </div>
+
+    <div class="modal-foot">
+      <button class="btn btn-ghost" id="resetBtn">恢复默认</button>
+      <span class="grow"></span>
+      <button class="btn btn-primary" id="saveCfgBtn">保存设置</button>
+    </div>
+  </div>
+</div>
+
+<div class="toasts" id="toasts"></div>
+<script src="/app.js"></script>
+</body>
+</html>

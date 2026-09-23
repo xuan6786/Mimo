@@ -1,0 +1,32 @@
+{
+  "servers": {
+    "example-filesystem": {
+      "enabled": false,
+      "transport": "stdio",
+      "description": "官方文件系统 MCP Server（示例，需要 Node.js）。把最后一个参数换成你要授权的目录。",
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-filesystem", "Y:/A_MiMo"],
+      "env": {},
+      "cwd": "",
+      "timeout": 40
+    },
+    "example-everything": {
+      "enabled": false,
+      "transport": "stdio",
+      "description": "官方 everything 测试服务器，用来验证 MCP 链路是否打通",
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-everything"],
+      "env": {},
+      "cwd": "",
+      "timeout": 40
+    },
+    "example-http": {
+      "enabled": false,
+      "transport": "http",
+      "description": "远端 MCP Server（Streamable HTTP 传输）示例",
+      "url": "http://127.0.0.1:3000/mcp",
+      "headers": {},
+      "timeout": 30
+    }
+  }
+}
